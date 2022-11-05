@@ -5,7 +5,9 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 import pandas as pd
 executable_path = {'executable_path': ChromeDriverManager().install()}
+
 browser = Browser('chrome', **executable_path, headless=False)
+
 # Visit the mars nasa news site
 url = 'https://redplanetscience.com'
 browser.visit(url)
@@ -44,15 +46,7 @@ df
 #converting dataframe back to hrml 
 
 df.to_html()
-browser.quit()
-# Import Splinter, BeautifulSoup, and Pandas
-from splinter import Browser
-from bs4 import BeautifulSoup as soup
-import pandas as pd
-from webdriver_manager.chrome import ChromeDriverManager
-# Set the executable path and initialize Splinter
-executable_path = {'executable_path': ChromeDriverManager().install()}
-browser = Browser('chrome', **executable_path, headless=False)
+
 ### Visit the NASA Mars News Site
 # Visit the mars nasa news site
 url = 'https://redplanetscience.com/'
@@ -97,6 +91,9 @@ df.set_index('Description', inplace=True)
 df
 df.to_html()
 # D1: Scrape High-Resolution Mars’ Hemisphere Images and Titles
+
+executable_path = {'executable_path': ChromeDriverManager().install()}
+browser = Browser('chrome', **executable_path, headless=False)
 ### Hemispheres
 # 1. Use browser to visit the URL 
 url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
@@ -109,24 +106,24 @@ hemisphere_image_urls = []
 # 3. Write code to retrieve the image urls and titles for each hemisphere.
 for hemis in range (4):
 
-    browser.links.find_by_partial_text('Hemisphere')[hemis].click()
+    browser.links.find_by_partial_text('Hemisphere Enhanced')[hemis].click()
 
     html = browser.html
     hemisphere_parse = soup(html,'html.parser')
 
 
     title = hemisphere_parse.find('h2', class_='title').text
-    image_url = hemisphere_parse.find('li').a.get('href')
+    img_url = hemisphere_parse.find('li').a.get('href')
 
     hemispheres = {}
-    hemispheres['img_url'] = f'https://marshemispheres.com/{img_url}'
+    hemispheres['img_url'] = f'{img_url}'
     hemispheres['title'] = title
     hemisphere_image_urls.append(hemispheres)
 
     browser.back()
 
 # 4. Print the list that holds the dictionary of each image url and title.
-hemisphere_image_urls
+print(hemisphere_image_urls)
 # 5. Quit the browser
 browser.quit()
 

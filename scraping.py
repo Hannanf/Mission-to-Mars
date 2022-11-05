@@ -4,6 +4,9 @@ import pandas as pd
 import datetime as dt
 from webdriver_manager.chrome import ChromeDriverManager
 
+executable_path = {'executable_path': ChromeDriverManager().install()}
+browser = Browser('chrome', **executable_path, headless=True)
+
 def scrape_all():
     executable_path = {'executable_path': ChromeDriverManager().install()}
     browser = Browser('chrome', **executable_path, headless=True)
@@ -73,14 +76,18 @@ def mars_facts():
 def mars_hemis(browser):
     url = 'https://marshemispheres.com/'
     browser.visit(url)
+    browser.is_element_present_by_css("ul.item_list li.slide", wait_time=1)
+    html = browser.html
+    hemi_soup = soup(html, 'html.parser')
 
     hemisphere_image_urls = []
+
     for hemis in range(4):
         browser.links.find_by_partial_text('Hemisphere')[hemis].click()
         html = browser.html
-        hemi_soup = soup(html, 'html.parser')
-        title = hemi_soup.find('h2', class_='title').text
-        img_url = hemi_soup.find('li').a.get('href')
+        img_soup = soup(html, 'html.parser')
+        title = img_soup.find('h2', class_='title').text
+        img_url = img_soup.find('li').a.get('href')
         hemispheres = {}
         hemispheres['img_url'] = f'https://marshemispheres.com/{img_url}'
         hemispheres['title'] = title
